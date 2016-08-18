@@ -1,16 +1,55 @@
 {% extends "base.html" %}
 
 {% block css %}
+    <style type="text/css">
+        .box { width:50px; border:1px solid; padding:10px; text-align: center; display: inline-block;}
+    </style>
 {% endblock %}
 
 {% block content %}
 
     <h1> Hello, World! </h1>
 
+    {% for table in table_status %}
+        {{ table }}
+        <br>
+    {% endfor %}
+
+    <p>
+
+    <div class="box" id="1"> 1 </div>
+    <div class="box" id="2"> 2 </div>
+    <div class="box" id="3"> 3 </div>
+    <div class="box" id="4"> 4 </div>
+    <div class="box" id="5"> 5 </div>
+    <div class="box" id="6"> 6 </div>
+
 {% endblock %}
 
 {% block javascript %}
     <script>
+
+        var table_num = 1;
+
+        {% for status in table_status %}
+            var bg_color;
+
+            {% if status == 0 %}
+                bg_color='rgb(124, 252, 000)';
+            {% elif status == 1 %}
+                bg_color='rgb(255, 000, 000)';
+            {% else %}
+                bg_color='rgb(255, 127, 080)';
+            {% endif %}
+
+            table = document.getElementById(table_num.toString());
+            set_color(table, bg_color);
+            table_num+=1;
+        {% endfor %}
+
+        function set_color(table, bg_color){
+            table.style.backgroundColor = bg_color;
+        }
 
     </script>
 
