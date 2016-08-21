@@ -8,49 +8,80 @@
 
 {% block content %}
 
-    <h1> Hello, World! </h1>
+    <h1>{{ store_name }}</h1> <p>
 
-    {% for table in table_status %}
-        {{ table }}
-        <br>
-    {% endfor %}
+    table status :
+
+    <div id = "check_status">
+        {% for table in table_status %}
+            {{ table }}
+
+        {% endfor %}
+    </div>
 
     <p>
 
-    <div class="box" id="1"> 1 </div>
-    <div class="box" id="2"> 2 </div>
-    <div class="box" id="3"> 3 </div>
-    <div class="box" id="4"> 4 </div>
-    <div class="box" id="5"> 5 </div>
-    <div class="box" id="6"> 6 </div>
+    <div class="tables" id="tables">
+        <div class="box" id="table_1"> 1 </div>
+        <div class="box" id="table_2"> 2 </div>
+        <div class="box" id="table_3"> 3 </div>
+        <div class="box" id="table_4"> 4 </div>
+        <div class="box" id="table_5"> 5 </div>
+        <div class="box" id="table_6"> 6 </div>
+        <div class="box" id="test"> test </div>
+    </div>
+
+    <p>
+
+    <Button id="btn_test">TEST</Button>
 
 {% endblock %}
 
 {% block javascript %}
     <script>
+        $('document').ready(function(){
+            function setTableNum(num){
+                var table_num = "table_" + num;
+                var table = document.getElementById(table_num);
 
-        var table_num = 1;
+                return table;
+            }
 
-        {% for status in table_status %}
-            var bg_color;
+            function setTableStatus(table_status){
+                var bg_color;
 
-            {% if status == 0 %}
-                bg_color='rgb(124, 252, 000)';
-            {% elif status == 1 %}
-                bg_color='rgb(255, 000, 000)';
-            {% else %}
-                bg_color='rgb(255, 127, 080)';
-            {% endif %}
+                for(var i=0 ; i<=table_status.length ; i++){
+                    if(table_status[i] == 0)
+                        bg_color='rgb(124, 252, 000)';
+                    else if(table_status[i] == 1)
+                        bg_color='rgb(255, 000, 000)';
+                    else
+                        bg_color='rgb(255, 000, 000)';
 
-            table = document.getElementById(table_num.toString());
-            set_color(table, bg_color);
-            table_num+=1;
-        {% endfor %}
+                    var table = setTableNum(i+1);
+                    setColor(table, bg_color);
 
-        function set_color(table, bg_color){
-            table.style.backgroundColor = bg_color;
-        }
+                }
+            }
 
+            function setColor(table, bg_color){
+                table.style.backgroundColor = bg_color;
+            }
+
+            setInterval(function(){
+                $.ajax({
+                    datatype:'json',
+                    url:'{% url 'home' %}',
+                    success: function(data) {
+                        table_status = data.table_status;
+                        setTableStatus(table_status);
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            }, 2000);
+        });
     </script>
 
 {% endblock %}

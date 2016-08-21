@@ -4,7 +4,9 @@ from django.shortcuts import render
 
 from django.views.generic import TemplateView
 from django.shortcuts import render_to_response
+from django.shortcuts import HttpResponse
 import stores.getDB
+import json
 
 
 class Home(TemplateView):
@@ -14,11 +16,16 @@ class Home(TemplateView):
 def home(request):
     context = print_db()
 
-    return render_to_response('main.html', context)
+    if request.is_ajax():
+        return HttpResponse(json.dumps({'store_name': context['store_name'], 'table_num': context['table_num'],
+                                        'table_status': context['table_status']}), content_type="application/json")
+    else:
+        return render_to_response('main.html', context)
 
 
 def print_db():
-    context = stores.getDB.store
-    context = {'stores': context, 'table_num': stores.getDB.table_num, 'table_status': stores.getDB.table_status}
+    context = stores.getDB.get_table_status('숭실대입구')
+    table_status = context['table_status']
+    # print(table_status)
 
     return context
