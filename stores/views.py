@@ -24,7 +24,7 @@ def home(request):
 
 
 def print_db():
-    context = stores.getDB.get_table_status('숭실대입구')
+    context = stores.getDB.get_table_status('soongsil')
     table_status = context['table_status']
     # print(table_status)
 

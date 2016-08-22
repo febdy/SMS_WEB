@@ -1,71 +1,94 @@
 {% extends "base.html" %}
 
 {% block css %}
-    <style type="text/css">
-        .box { width:50px; border:1px solid; padding:10px; text-align: center; display: inline-block;}
-    </style>
 {% endblock %}
 
 {% block content %}
 
     <h1>{{ store_name }}</h1> <p>
 
-    table status :
-
-    <div id = "check_status">
-        {% for table in table_status %}
-            {{ table }}
-
-        {% endfor %}
-    </div>
+    table status : <span id="takenTableNum">0</span> / <span id="totalTableNum">0</span>
 
     <p>
 
     <div class="tables" id="tables">
-        <div class="box" id="table_1"> 1 </div>
-        <div class="box" id="table_2"> 2 </div>
-        <div class="box" id="table_3"> 3 </div>
-        <div class="box" id="table_4"> 4 </div>
-        <div class="box" id="table_5"> 5 </div>
-        <div class="box" id="table_6"> 6 </div>
-        <div class="box" id="test"> test </div>
+        <a href="#" onClick="pop('popDiv', '1')"><Button class="box" id="table_1"> 1 </Button></a>
+        <a href="#" onClick="pop('popDiv', '2')"><Button class="box" id="table_2"> 2 </Button></a>
+        <a href="#" onClick="pop('popDiv', '3')"><Button class="box" id="table_3"> 3 </Button></a>
+        <a href="#" onClick="pop('popDiv', '4')"><Button class="box" id="table_4"> 4 </Button></a>
+        <a href="#" onClick="pop('popDiv', '5')"><Button class="box" id="table_5"> 5 </Button></a>
+        <a href="#" onClick="pop('popDiv', '6')"><Button class="box" id="table_6"> 6 </Button></a>
+        <Button class="box" id="test"> test </Button>
     </div>
 
-    <p>
-
-    <Button id="btn_test">TEST</Button>
+    <div id="popDiv" class="onTop">
+    <div border="1" id="popup">
+        <div id="close"><a href="#" onClick="hide('popDiv')">Close</a></div>
+        <h2>*Setting</h2>
+        set No.<span id="tableNumber"></span> table<p>
+        <div id="setting">
+            <span id="taken"><a href="#" onClick="hide('popDiv')">taken</a></span>
+            <span id="free"><a href="#" onClick="hide('popDiv')">free</a></span>
+        </div>
+    </div>
 
 {% endblock %}
 
 {% block javascript %}
     <script>
+        function pop(div, num) {
+            document.getElementById(div).style.display = 'block';
+            document.getElementById("tableNumber").innerHTML = num;
+        }
+
+        function hide(div) {
+            document.getElementById(div).style.display = 'none';
+        }
+
+        document.onkeydown = function(evt) {
+            evt = evt || window.event;
+            if (evt.keyCode == 27) {
+                hide('popDiv');
+            }
+        };
+
         $('document').ready(function(){
             function setTableNum(num){
-                var table_num = "table_" + num;
-                var table = document.getElementById(table_num);
+                var tableNum = "table_" + num;
+                var table = document.getElementById(tableNum);
 
                 return table;
             }
 
-            function setTableStatus(table_status){
-                var bg_color;
+            function setTableStatus(tableStatus){
+                var bgColor;
+                var taken = 0;
 
-                for(var i=0 ; i<=table_status.length ; i++){
-                    if(table_status[i] == 0)
-                        bg_color='rgb(124, 252, 000)';
-                    else if(table_status[i] == 1)
-                        bg_color='rgb(255, 000, 000)';
+                for(var i=0 ; i<=tableStatus.length ; i++){
+                    if(tableStatus[i] == 0)
+                        bgColor = 'rgb(124, 252, 000)';
+                    else if(tableStatus[i] == 1){
+                        bgColor='rgb(255, 000, 000)';
+                        taken += 1;
+                    }
                     else
-                        bg_color='rgb(255, 000, 000)';
+                        bgColor='rgb(255, 000, 000)';
 
                     var table = setTableNum(i+1);
-                    setColor(table, bg_color);
+                    setColor(table, bgColor);
+                    setTakenNum(taken, tableStatus.length);
 
                 }
+
             }
 
-            function setColor(table, bg_color){
-                table.style.backgroundColor = bg_color;
+            function setColor(table, bgColor){
+                table.style.backgroundColor = bgColor;
+            }
+
+            function setTakenNum(taken, total){
+                $("#takenTableNum").text(taken);
+                $("#totalTableNum").text(total);
             }
 
             setInterval(function(){
@@ -73,14 +96,15 @@
                     datatype:'json',
                     url:'{% url 'home' %}',
                     success: function(data) {
-                        table_status = data.table_status;
-                        setTableStatus(table_status);
+                        tableStatus = data.table_status;
+                        setTableStatus(tableStatus);
                     },
                     error: function(error) {
                         console.log(error);
                     }
                 });
             }, 2000);
+
         });
     </script>
 
