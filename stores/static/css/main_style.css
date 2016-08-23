@@ -46,17 +46,17 @@
     alignment: center;
 }
 
-#taken {
-    margin-left: 15%;
-    margin-right: 10%;
-}
-
-#free {
-    margin-left: 10%;
-    margin-right: 15%;
+.showTableNum {
+    text-align: center;
 }
 
 a {
     font-size: 30px;
     text-decoration:none
+}
+
+.setting {
+    display: inline-block;
+    margin-left: 3%;
+    margin-right: 3%;
 }

@@ -6,6 +6,7 @@ from django.views.generic import TemplateView
 from django.shortcuts import render_to_response
 from django.shortcuts import HttpResponse
 import stores.getDB
+import stores.updateDB
 import json
 
 
@@ -29,3 +30,21 @@ def print_db():
     # print(table_status)
 
     return context
+
+
+def update_db(request):
+    store_name = request.GET['storeName']
+    table_number = "table_"+request.GET['tableNum']
+    set_status = request.GET['setStatus']
+    stores.updateDB.set_table_status(store_name, table_number, set_status)
+
+    # print(request)
+
+    home(request)
+
+    context = print_db()
+
+    return HttpResponse(json.dumps({'store_name': context['store_name'], 'table_num': context['table_num'],
+                                    'table_status': context['table_status']}), content_type="application/json")
+
+
