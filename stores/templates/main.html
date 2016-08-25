@@ -12,12 +12,12 @@
     <p>
 
     <div class="tables" id="tables">
-        <a href="#" onClick="pop('popDiv', '1')"><Button class="box" id="table_1"> 1 </Button></a>
-        <a href="#" onClick="pop('popDiv', '2')"><Button class="box" id="table_2"> 2 </Button></a>
-        <a href="#" onClick="pop('popDiv', '3')"><Button class="box" id="table_3"> 3 </Button></a>
-        <a href="#" onClick="pop('popDiv', '4')"><Button class="box" id="table_4"> 4 </Button></a>
-        <a href="#" onClick="pop('popDiv', '5')"><Button class="box" id="table_5"> 5 </Button></a>
-        <a href="#" onClick="pop('popDiv', '6')"><Button class="box" id="table_6"> 6 </Button></a>
+        <a href="#" onClick="isCheck('1')"><Button class="box" id="table_1"> 1 </Button></a>
+        <a href="#" onClick="isCheck('popDiv', '2')"><Button class="box" id="table_2"> 2 </Button></a>
+        <a href="#" onClick="isCheck('popDiv', '3')"><Button class="box" id="table_3"> 3 </Button></a>
+        <a href="#" onClick="isCheck('popDiv', '4')"><Button class="box" id="table_4"> 4 </Button></a>
+        <a href="#" onClick="isCheck('popDiv', '5')"><Button class="box" id="table_5"> 5 </Button></a>
+        <a href="#" onClick="isCheck('popDiv', '6')"><Button class="box" id="table_6"> 6 </Button></a>
         <Button class="box" id="test"> test </Button>
     </div>
 
@@ -28,7 +28,6 @@
             <div class="showTableNum">set No.<span id="tableNumber">0</span> table<p></div>
             <div id="setting">
                 <div class="setting" id="taken"><a href="#" onClick="hide('popDiv')">taken</a></div>
-                <div class="setting" id="check"><a href="#" onClick="hide('popDiv')">check</a></div>
                 <div class="setting" id="free"><a href="#" onClick="hide('popDiv')">free</a></div>
             </div>
         </div>
@@ -38,6 +37,13 @@
 
 {% block javascript %}
     <script>
+
+        function isCheck(div, num){
+            var table = "table_"+num;
+            var bgColor = document.getElementById(table).style.backgroundColor;
+            if(bgColor == 'orange')
+                pop(div, num);
+        }
 
         function pop(div, num) {
             document.getElementById(div).style.display = 'block';
@@ -69,13 +75,15 @@
 
                 for(var i=0 ; i<=tableStatus.length ; i++){
                     if(tableStatus[i] == 0)
-                        bgColor = 'rgb(124, 252, 000)';
+                        bgColor = 'yellowGreen';
                     else if(tableStatus[i] == 1){
-                        bgColor='rgb(255, 000, 000)';
+                        bgColor='red';
                         taken += 1;
                     }
-                    else
-                        bgColor='rgb(255, 127, 080)';
+                    else{
+                        bgColor='orange';
+                        taken += 1;
+                    }
 
                     var table = setTableNum(i+1);
                     setColor(table, bgColor);
@@ -101,23 +109,6 @@
                         'storeName' : '{{ store_name }}',
                         'tableNum' : document.getElementById("tableNumber").innerHTML,
                         'setStatus' : '1'
-                    },
-                    datatype:'json',
-                    success: function(data) {
-                    },
-                    error: function(error) {
-                        console.log(error);
-                    }
-                });
-            });
-
-            $('#check').click(function(){
-                $.ajax({
-                    url:'{% url 'update_db' %}',
-                    data:{
-                        'storeName' : '{{ store_name }}',
-                        'tableNum' : document.getElementById("tableNumber").innerHTML,
-                        'setStatus' : '2'
                     },
                     datatype:'json',
                     success: function(data) {
