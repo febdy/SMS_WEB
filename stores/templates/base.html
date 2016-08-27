@@ -5,7 +5,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Seat Management System</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/main_style.css'%}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main_style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/store_status_style.css' %}">
     {% block css %}
     {% endblock %}
 </head>
@@ -15,6 +16,7 @@
 {% endblock %}
 
 <script src='http://code.jquery.com/jquery-3.1.0.min.js'></script>
+<script async src="//code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
 <script src='{% static 'js/ajax_csrf.js' %}'></script>
 
 {% block javascript %}

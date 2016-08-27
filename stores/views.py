@@ -15,13 +15,33 @@ class Home(TemplateView):
 
 
 def home(request):
+
+    return render_to_response('main.html')
+
+
+def autocomplete(request):
+    # search_qs = ModelName.objects.filter(name__startswith=request.REQUEST['search'])
+
+    store_names = stores.getDB.get_store_names()
+    search_word = request.GET['search']
+
+    results = {}
+
+    for store_name in store_names:
+        if search_word in store_name:
+            results[store_name] = store_name
+
+    return HttpResponse(json.dumps(results), content_type="application/json")
+
+
+def store_status(request):
     context = print_db()
 
     if request.is_ajax():
         return HttpResponse(json.dumps({'store_name': context['store_name'], 'table_num': context['table_num'],
                                         'table_status': context['table_status']}), content_type="application/json")
     else:
-        return render_to_response('main.html', context)
+        return render_to_response('store_status.html', context)
 
 
 def print_db():

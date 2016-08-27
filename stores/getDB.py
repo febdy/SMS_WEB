@@ -24,3 +24,21 @@ def get_table_status(storename):
     return context
 
     conn.close()
+
+
+def get_store_names():
+    conn = pymysql.connect(host='175.126.112.111', user='root', password='dandy', db='TEST', charset='utf8')
+    curs = conn.cursor()
+
+    sql = "select * from TEST.table_info"
+    curs.execute(sql)
+    results = curs.fetchall()
+
+    store_names = []
+
+    for store in results:
+        store_names.append(store[1])
+
+    return store_names
+
+    conn.close()

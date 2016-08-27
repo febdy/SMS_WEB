@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block css %}
+{% endblock %}
+
+{% block content %}
+
+    <h1>{{ store_name }}</h1> <p>
+
+    table status : <span id="takenTableNum">0</span> / <span id="totalTableNum">0</span>
+
+    <p>
+
+    <div class="tables" id="tables">
+        <a href="#" onClick="isCheck('1')"><Button class="box" id="table_1"> 1 </Button></a>
+        <a href="#" onClick="isCheck('popDiv', '2')"><Button class="box" id="table_2"> 2 </Button></a>
+        <a href="#" onClick="isCheck('popDiv', '3')"><Button class="box" id="table_3"> 3 </Button></a>
+        <a href="#" onClick="isCheck('popDiv', '4')"><Button class="box" id="table_4"> 4 </Button></a>
+        <a href="#" onClick="isCheck('popDiv', '5')"><Button class="box" id="table_5"> 5 </Button></a>
+        <a href="#" onClick="isCheck('popDiv', '6')"><Button class="box" id="table_6"> 6 </Button></a>
+        <Button class="box" id="test"> test </Button>
+    </div>
+
+    <div id="popDiv" class="onTop">
+        <div id="popup">
+            <div id="close"><a href="#" onClick="hide('popDiv')">Close</a></div>
+            <h2>*Setting</h2>
+            <div class="showTableNum">set No.<span id="tableNumber">0</span> table<p></div>
+            <div id="setting">
+                <div class="setting" id="taken"><a href="#" onClick="hide('popDiv')">taken</a></div>
+                <div class="setting" id="free"><a href="#" onClick="hide('popDiv')">free</a></div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascript %}
+    <script>
+
+        function isCheck(div, num){
+            var table = "table_"+num;
+            var bgColor = document.getElementById(table).style.backgroundColor;
+            if(bgColor == 'orange')
+                pop(div, num);
+        }
+
+        function pop(div, num) {
+            document.getElementById(div).style.display = 'block';
+            document.getElementById("tableNumber").innerHTML = num;
+        }
+
+        function hide(div) {
+            document.getElementById(div).style.display = 'none';
+        }
+
+        document.onkeydown = function(evt) {
+            evt = evt || window.event;
+            if (evt.keyCode == 27) {
+                hide('popDiv');
+            }
+        };
+
+        $('document').ready(function(){
+            function setTableNum(num){
+                var tableNum = "table_" + num;
+                var table = document.getElementById(tableNum);
+
+                return table;
+            }
+
+            function setTableStatus(tableStatus){
+                var bgColor;
+                var taken = 0;
+
+                for(var i=0 ; i<=tableStatus.length ; i++){
+                    if(tableStatus[i] == 0)
+                        bgColor = 'yellowGreen';
+                    else if(tableStatus[i] == 1){
+                        bgColor='red';
+                        taken += 1;
+                    }
+                    else{
+                        bgColor='orange';
+                        taken += 1;
+                    }
+
+                    var table = setTableNum(i+1);
+                    setColor(table, bgColor);
+                    setTakenNum(taken, tableStatus.length);
+
+                }
+
+            }
+
+            function setColor(table, bgColor){
+                table.style.backgroundColor = bgColor;
+            }
+
+            function setTakenNum(taken, total){
+                $("#takenTableNum").text(taken);
+                $("#totalTableNum").text(total);
+            }
+
+            $('#taken').click(function(){
+                $.ajax({
+                    url:'{% url 'update_db' %}',
+                    data:{
+                        'storeName' : '{{ store_name }}',
+                        'tableNum' : document.getElementById("tableNumber").innerHTML,
+                        'setStatus' : '1'
+                    },
+                    datatype:'json',
+                    success: function(data) {
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            });
+
+            $('#free').click(function(){
+                $.ajax({
+                    url:'{% url 'update_db' %}',
+                    data:{
+                        'storeName' : '{{ store_name }}',
+                        'tableNum' : document.getElementById("tableNumber").innerHTML,
+                        'setStatus' : '0'
+                    },
+                    datatype:'json',
+                    success: function(data) {
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            });
+
+            setInterval(function(){
+                $.ajax({
+                    datatype:'json',
+                    url:'{% url 'store_status' %}',
+                    success: function(data) {
+                        tableStatus = data.table_status;
+                        setTableStatus(tableStatus);
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            }, 2000);
+
+        });
+
+
+    </script>
+
+
+
+{% endblock %}
