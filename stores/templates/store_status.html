@@ -5,6 +5,7 @@
 
 {% block content %}
 
+    <a href="/">HOME</a>
     <h1>{{ store_name }}</h1> <p>
 
     table status : <span id="takenTableNum">0</span> / <span id="totalTableNum">0</span>
@@ -18,7 +19,6 @@
         <a href="#" onClick="isCheck('popDiv', '4')"><Button class="box" id="table_4"> 4 </Button></a>
         <a href="#" onClick="isCheck('popDiv', '5')"><Button class="box" id="table_5"> 5 </Button></a>
         <a href="#" onClick="isCheck('popDiv', '6')"><Button class="box" id="table_6"> 6 </Button></a>
-        <Button class="box" id="test"> test </Button>
     </div>
 
     <div id="popDiv" class="onTop">
@@ -139,7 +139,7 @@
             setInterval(function(){
                 $.ajax({
                     datatype:'json',
-                    url:'{% url 'store_status' %}',
+                    url:"/store_status/{{ store_name }}",
                     success: function(data) {
                         tableStatus = data.table_status;
                         setTableStatus(tableStatus);

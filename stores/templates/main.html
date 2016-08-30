@@ -7,15 +7,21 @@
 
     <div id="outer">
         <div id="inner">
-            <form>
-                <input class="search" type="text" id="searchBox" placeholder="Search.." autocomplete="on">
+            <form id="search" method="get" action="{% url 'search' %}">
+                <input class="search" type="text" id="searchBox" name="searchBox" placeholder="Search.." autocomplete="on">
                 <input class="search" type="submit" value="search">
             </form>
         </div>
     </div>
 
-    <div id="result">TEST</div>
-
+    <div id="storeList">
+        {% for store in context %}
+            <span><a href="/store_status/{{ store.store_name }}">{{ store.store_name }}</a></span>
+            <span>{{ store.latitude }}</span>
+            <span>{{ store.latitude }}</span>
+            <p>
+        {% endfor %}
+    </div>
 
 
 {% endblock %}
@@ -26,11 +32,11 @@
             $( "#searchBox" ).autocomplete({
                 minLength: 1,
                 source: function(req, add){
-                    var search = $("#searchBox").val();
+                    var searchWord = $("#searchBox").val();
                     $.ajax({
-                        url: '/search/',
+                        url: '/autocomplete/',
                         dataType: 'json',
-                        data:{'search': search},
+                        data:{'search_word': searchWord},
                         success: function(data) {
                             var suggestions=[];
 
@@ -46,7 +52,7 @@
                     })
                 }
             });
-        } );
+        });
 
     </script>
 

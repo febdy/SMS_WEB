@@ -15,15 +15,15 @@ class Home(TemplateView):
 
 
 def home(request):
+    context = stores.getDB.get_store_info()
+    context = {'context': context}
 
-    return render_to_response('main.html')
+    return render_to_response('main.html', context)
 
 
 def autocomplete(request):
-    # search_qs = ModelName.objects.filter(name__startswith=request.REQUEST['search'])
-
     store_names = stores.getDB.get_store_names()
-    search_word = request.GET['search']
+    search_word = request.GET['search_word']
 
     results = {}
 
@@ -34,8 +34,23 @@ def autocomplete(request):
     return HttpResponse(json.dumps(results), content_type="application/json")
 
 
-def store_status(request):
-    context = print_db()
+def search(request):
+    search_word = request.GET.get("searchBox")
+
+    context = stores.getDB.get_store_info()
+    results = []
+
+    for store in context:
+        if search_word in store['store_name']:
+            results.append(store)
+
+    context = {'context': results}
+
+    return render_to_response('main.html', context)
+
+
+def store_status(request, store_name):
+    context = get_db(store_name)
 
     if request.is_ajax():
         return HttpResponse(json.dumps({'store_name': context['store_name'], 'table_num': context['table_num'],
@@ -44,10 +59,8 @@ def store_status(request):
         return render_to_response('store_status.html', context)
 
 
-def print_db():
-    context = stores.getDB.get_table_status('soongsil')
-    table_status = context['table_status']
-    # print(table_status)
+def get_db(store_name):
+    context = stores.getDB.get_table_status(store_name)
 
     return context
 
@@ -58,13 +71,10 @@ def update_db(request):
     set_status = request.GET['setStatus']
     stores.updateDB.set_table_status(store_name, table_number, set_status)
 
-    # print(request)
-
     home(request)
 
-    context = print_db()
+    context = get_db()
 
     return HttpResponse(json.dumps({'store_name': context['store_name'], 'table_num': context['table_num'],
                                     'table_status': context['table_status']}), content_type="application/json")
-
 
