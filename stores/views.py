@@ -15,14 +15,14 @@ class Home(TemplateView):
 
 
 def home(request):
-    context = stores.getDB.get_store_info()
+    context = get_store_info_db()
     context = {'context': context}
 
     return render_to_response('main.html', context)
 
 
 def autocomplete(request):
-    store_names = stores.getDB.get_store_names()
+    store_names = get_store_names_db()
     search_word = request.GET['search_word']
 
     results = {}
@@ -37,7 +37,7 @@ def autocomplete(request):
 def search(request):
     search_word = request.GET.get("searchBox")
 
-    context = stores.getDB.get_store_info()
+    context = get_store_info_db()
     results = []
 
     for store in context:
@@ -50,31 +50,40 @@ def search(request):
 
 
 def store_status(request, store_name):
-    context = get_db(store_name)
+    context = get_table_status_db(store_name)
+    context['range'] = range(1, context['table_num']+1)
 
     if request.is_ajax():
-        return HttpResponse(json.dumps({'store_name': context['store_name'], 'table_num': context['table_num'],
-                                        'table_status': context['table_status']}), content_type="application/json")
+        return HttpResponse(json.dumps({'table_status': context['table_status']}),
+                            content_type="application/json")
     else:
         return render_to_response('store_status.html', context)
-
-
-def get_db(store_name):
-    context = stores.getDB.get_table_status(store_name)
-
-    return context
 
 
 def update_db(request):
     store_name = request.GET['storeName']
     table_number = "table_"+request.GET['tableNum']
     set_status = request.GET['setStatus']
+    update_table_status(store_name, table_number, set_status)
+
+
+def get_store_info_db():
+    context = stores.getDB.get_store_info()
+
+    return context
+
+
+def get_table_status_db(store_name):
+    context = stores.getDB.get_table_status(store_name)
+
+    return context
+
+
+def get_store_names_db():
+    store_names = stores.getDB.get_store_names()
+
+    return store_names
+
+
+def update_table_status(store_name, table_number, set_status):
     stores.updateDB.set_table_status(store_name, table_number, set_status)
-
-    home(request)
-
-    context = get_db()
-
-    return HttpResponse(json.dumps({'store_name': context['store_name'], 'table_num': context['table_num'],
-                                    'table_status': context['table_status']}), content_type="application/json")
-

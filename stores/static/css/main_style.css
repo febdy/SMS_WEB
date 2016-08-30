@@ -25,3 +25,7 @@
 .ui-helper-hidden-accessible {
     display:none;
 }
+
+a {
+    color: inherit;
+}

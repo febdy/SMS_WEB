@@ -13,12 +13,9 @@
     <p>
 
     <div class="tables" id="tables">
-        <a href="#" onClick="isCheck('1')"><Button class="box" id="table_1"> 1 </Button></a>
-        <a href="#" onClick="isCheck('popDiv', '2')"><Button class="box" id="table_2"> 2 </Button></a>
-        <a href="#" onClick="isCheck('popDiv', '3')"><Button class="box" id="table_3"> 3 </Button></a>
-        <a href="#" onClick="isCheck('popDiv', '4')"><Button class="box" id="table_4"> 4 </Button></a>
-        <a href="#" onClick="isCheck('popDiv', '5')"><Button class="box" id="table_5"> 5 </Button></a>
-        <a href="#" onClick="isCheck('popDiv', '6')"><Button class="box" id="table_6"> 6 </Button></a>
+        {% for i in range %}
+            <a href="#" onClick="isCheck('popDiv', {{ i }})"><Button class="box" id="table_{{ i }}">{{ i }}</Button></a>
+        {% endfor %}
     </div>
 
     <div id="popDiv" class="onTop">
