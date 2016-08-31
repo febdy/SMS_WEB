@@ -29,3 +29,8 @@
 a {
     color: inherit;
 }
+
+.map {
+    width:500px;
+    height:250px;
+}
