@@ -4,29 +4,38 @@
 {% endblock %}
 
 {% block content %}
-
-    <a href="/">HOME</a>
-    <h1>{{ store_name }}</h1> <p>
-
-    table status : <span id="takenTableNum">0</span> / <span id="totalTableNum">0</span>
-
+    <div class="top">
+        <div class="topLeft"><a href="/">HOME</a></div>
+        <div class="topCenter">{{ store_name }}</div>
+        <div class="topRight"><span id="takenTableNum">0</span> / <span id="totalTableNum">0</span></div>
+    </div>
     <p>
 
-    <div class="tables" id="tables">
-        {% for i in range %}
-            <a href="#" onClick="isCheck('popDiv', {{ i }})"><Button class="box" id="table_{{ i }}">{{ i }}</Button></a>
-        {% endfor %}
+        <div class="middle" id="tables">
+            {% for i in range %}
+                <a href="#" onClick="isCheck('popDiv', {{ i }})"><img src="/static/img/f_{{ i }}.jpg" id="table_{{ i }}" class="tableImg"></a>
+                {% if i == 5 %}
+                    <p>
+                {% endif %}
+            {% endfor %}
+            </div>
+
+            <div id="popDiv" class="onTop">
+                <div id="popup">
+                    <div id="close"><a href="#" onClick="hide('popDiv')">Close</a></div>
+                    <h2>*Setting</h2>
+                    <div class="showTableNum">set No.<span id="tableNumber">0</span> table<p></div>
+    <div id="setting">
+        <div class="setting" id="taken"><a href="#" onClick="hide('popDiv')">taken</a></div>
+        <div class="setting" id="free"><a href="#" onClick="hide('popDiv')">free</a></div>
+    </div>
+    </div>
     </div>
 
-    <div id="popDiv" class="onTop">
-        <div id="popup">
-            <div id="close"><a href="#" onClick="hide('popDiv')">Close</a></div>
-            <h2>*Setting</h2>
-            <div class="showTableNum">set No.<span id="tableNumber">0</span> table<p></div>
-            <div id="setting">
-                <div class="setting" id="taken"><a href="#" onClick="hide('popDiv')">taken</a></div>
-                <div class="setting" id="free"><a href="#" onClick="hide('popDiv')">free</a></div>
-            </div>
+    <div class="bottom">
+        <div class="info">
+            <img src="/static/img/free.png" class="infoImg">사용가능좌석
+            <img src="/static/img/taken.png" class="infoImg">사용중좌석
         </div>
     </div>
 
@@ -37,8 +46,9 @@
 
         function isCheck(div, num){
             var table = "table_"+num;
-            var bgColor = document.getElementById(table).style.backgroundColor;
-            if(bgColor == 'orange')
+            var src = document.getElementById(table).src;
+            var index = src.indexOf(num);
+            if(src.charAt(index-2) == "c")
                 pop(div, num);
         }
 
@@ -67,31 +77,31 @@
             }
 
             function setTableStatus(tableStatus){
-                var bgColor;
+                var src;
                 var taken = 0;
 
                 for(var i=0 ; i<=tableStatus.length ; i++){
                     if(tableStatus[i] == 0)
-                        bgColor = 'yellowGreen';
+                        src = "f_" + (i+1) + ".jpg";
                     else if(tableStatus[i] == 1){
-                        bgColor='red';
+                        src="t_" + (i+1) + ".jpg";
                         taken += 1;
                     }
                     else{
-                        bgColor='orange';
+                        src="c_" + (i+1) + ".png";
                         taken += 1;
                     }
 
                     var table = setTableNum(i+1);
-                    setColor(table, bgColor);
+                    setSrc(table, src);
                     setTakenNum(taken, tableStatus.length);
 
                 }
 
             }
 
-            function setColor(table, bgColor){
-                table.style.backgroundColor = bgColor;
+            function setSrc(table, src){
+                table.src = "/static/img/"+src;
             }
 
             function setTakenNum(taken, total){

@@ -6,22 +6,26 @@
 {% block content %}
 
     <div id="outer">
-        <div id="inner">
+        <div id="top">
             <form id="search" method="get" action="{% url 'search' %}">
                 <input class="search" type="text" id="searchBox" name="searchBox" placeholder="Search.." autocomplete="on">
                 <input class="search" type="submit" value="search">
             </form>
         </div>
-    </div>
 
-    <div id="storeList">
-        {% for store in context %}
-            <span><a href="/store_status/{{ store.store_name }}">{{ store.store_name }}</a></span>
-            <span>{{ store.latitude }}</span>
-            <span>{{ store.latitude }}</span>
-            <div class="map" id="map_{{ store.store_name }}"></div>
-            <p>
-        {% endfor %}
+        <div id="storeList">
+            <div class="results left">STORE NAME</div>
+            <div class="results right">LOCATION</div><p>
+            {% for store in context %}
+                <div class="results left">
+                    <span><a href="/store_status/{{ store.store_name }}">{{ store.store_name }}</a></span>
+                </div>
+                <div class="results right">
+                    <div class="map" id="map_{{ store.store_name }}"></div>
+                </div>
+                <p>
+            {% endfor %}
+        </div>
     </div>
 
 {% endblock %}
