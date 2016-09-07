@@ -34,8 +34,8 @@
 
     <div class="bottom">
         <div class="info">
-            <img src="/static/img/free.png" class="infoImg">사용가능좌석
-            <img src="/static/img/taken.png" class="infoImg">사용중좌석
+            <img src="/static/img/info_free.png" class="infoImg">
+            <img src="/static/img/info_taken.png" class="infoImg">
         </div>
     </div>
 
@@ -43,7 +43,6 @@
 
 {% block javascript %}
     <script>
-
         function isCheck(div, num){
             var table = "table_"+num;
             var src = document.getElementById(table).src;
