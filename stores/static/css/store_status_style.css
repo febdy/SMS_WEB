@@ -24,11 +24,14 @@ html, body{
 }
 
 .topRight {
-    font-size: 70px;
+    font-size: 40px;
     font-weight: bold;
     float: right;
     padding-top: 20px;
-    padding-right: 50px;
+}
+
+.takenPerTotal {
+    font-size: 30px;
 }
 
 .middle {
@@ -118,6 +121,7 @@ html, body{
 
 .showTableNum {
     text-align: center;
+    margin-bottom: 40px;
 }
 
 a {
@@ -127,6 +131,6 @@ a {
 
 .setting {
     display: inline-block;
-    margin-left: 10%;
-    margin-right: 10%;
+    margin-left: 15%;
+    margin-right: 15%;
 }
