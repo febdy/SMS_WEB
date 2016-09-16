@@ -54,8 +54,8 @@ def store_status(request, store_name):
     context['range'] = range(1, context['table_num']+1)
 
     if request.is_ajax():
-        return HttpResponse(json.dumps({'table_status': context['table_status']}),
-                            content_type="application/json")
+        return HttpResponse(json.dumps({'table_status': context['table_status'], 'if_modified': context['if_modified']})
+                            , content_type="application/json")
     else:
         return render_to_response('store_status.html', context)
 
@@ -64,7 +64,9 @@ def update_db(request):
     store_name = request.GET['storeName']
     table_number = "table_"+request.GET['tableNum']
     set_status = request.GET['setStatus']
-    update_table_status(store_name, table_number, set_status)
+    modified_number = "modified_"+request.GET['tableNum']
+    if_modified = request.GET['ifModified']
+    update_table_status(store_name, table_number, set_status, modified_number, if_modified)
 
 
 def get_store_info_db():
@@ -85,5 +87,5 @@ def get_store_names_db():
     return store_names
 
 
-def update_table_status(store_name, table_number, set_status):
-    stores.updateDB.set_table_status(store_name, table_number, set_status)
+def update_table_status(store_name, table_number, set_status, modified_number, if_modified):
+    stores.updateDB.set_table_status(store_name, table_number, set_status, modified_number, if_modified)

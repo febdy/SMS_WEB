@@ -18,18 +18,18 @@
                     <p/>
                 {% endif %}
             {% endfor %}
-            </div>
+    </div>
 
-            <div id="popDiv" class="onTop">
-                <div id="popup">
-                    <div id="close"><a href="#" onClick="hide('popDiv')">Close</a></div>
-                    <h2>*Setting</h2>
-                    <div class="showTableNum">set No.<span id="tableNumber">0</span> table<p></div>
-    <div id="setting">
-        <div class="setting" id="taken"><a href="#" onClick="hide('popDiv')">taken</a></div>
-        <div class="setting" id="free"><a href="#" onClick="hide('popDiv')">free</a></div>
-    </div>
-    </div>
+    <div id="popDiv" class="onTop">
+        <div id="popup">
+            <div id="close"><a href="#" onClick="hide('popDiv')">Close</a></div>
+            <h2>*Setting</h2>
+            <div class="showTableNum">set No.<span id="tableNumber">0</span> table<p></div>
+            <div id="setting">
+                <div class="setting" id="taken"><a href="#" onClick="hide('popDiv')">taken</a></div>
+                <div class="setting" id="free"><a href="#" onClick="hide('popDiv')">free</a></div>
+            </div>
+        </div>
     </div>
 
     <div class="bottom">
@@ -50,7 +50,7 @@
 
             if(src.charAt(index+4) == "c"){
                 pop(div, num);
-        }
+            }
         }
 
         function pop(div, num) {
@@ -77,27 +77,27 @@
                 return table;
             }
 
-            function setTableStatus(tableStatus){
+            function setTableStatus(tableStatus, ifModifiedArr){
                 var src;
                 var free = 0;
 
-                for(var i=0 ; i<=tableStatus.length ; i++){
-                    if(tableStatus[i] == 0){
-                        src = "f_" + (i+1) + ".jpg";
-                        free += 1;
-                    } else if(tableStatus[i] == 1){
-                        src="t_" + (i+1) + ".jpg";
-                    }
-                    else{
-                        src="c_" + (i+1) + ".png";
-                    }
+                for(var i=0 ; i<=tableStatus.length ; i++) {
+                    if (ifModifiedArr[i] == 0) {
+                        if (tableStatus[i] == 0) {
+                            src = "f_" + (i + 1) + ".jpg";
+                            free += 1;
+                        } else if (tableStatus[i] == 1) {
+                            src = "c_" + (i + 1) + ".jpg";
+                        }
+                        else {
+                            src = "t_" + (i + 1) + ".jpg"; // 2 -> 사람있음 1 -> 불확실함 flag
+                        }
 
-                    var table = setTableNum(i+1);
-                    setSrc(table, src);
-                    setFreeNum(free, tableStatus.length);
-
+                        var table = setTableNum(i + 1);
+                        setSrc(table, src);
+                        setFreeNum(free, tableStatus.length);
+                    }
                 }
-
             }
 
             function setSrc(table, src){
@@ -110,12 +110,17 @@
             }
 
             $('#taken').click(function(){
+                var tableNum = document.getElementById("tableNumber").innerHTML;
+                var src = "t_" + tableNum + ".jpg";
+                setSrc("table_"+tableNum, src);
+
                 $.ajax({
                     url:'{% url 'update_db' %}',
                     data:{
                         'storeName' : '{{ store_name }}',
                         'tableNum' : document.getElementById("tableNumber").innerHTML,
-                        'setStatus' : '1'
+                        'setStatus' : '2',
+                        'ifModified':'1'
                     },
                     datatype:'json',
                     success: function(data) {
@@ -132,7 +137,8 @@
                     data:{
                         'storeName' : '{{ store_name }}',
                         'tableNum' : document.getElementById("tableNumber").innerHTML,
-                        'setStatus' : '0'
+                        'setStatus' : '0',
+                        'ifModified':'1'
                     },
                     datatype:'json',
                     success: function(data) {
@@ -149,7 +155,8 @@
                     url:"/store_status/{{ store_name }}",
                     success: function(data) {
                         tableStatus = data.table_status;
-                        setTableStatus(tableStatus);
+                        ifModifiedArr = data.if_modified;
+                        setTableStatus(tableStatus, ifModifiedArr);
                     },
                     error: function(error) {
                         console.log(error);

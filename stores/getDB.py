@@ -13,12 +13,14 @@ def get_table_status(store_name):
         table_num = store[2]
 
     table_status = []
+    if_modified = []
 
     for i in range(0, table_num):
         table_status.append(store[3+i])
+        if_modified.append(store[13+i])
 
     context = {'store_name': store_name, 'table_num': table_num,
-               'table_status': table_status}
+               'table_status': table_status, 'if_modified': if_modified}
 
     return context
 
