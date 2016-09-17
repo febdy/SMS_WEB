@@ -24,4 +24,6 @@ urlpatterns = [
     url(r'^autocomplete/$', views.autocomplete, name='autocomplete'),
     url(r'^update_db/', views.update_db, name='update_db'),
     url(r'^store_status/(?P<store_name>[\w-]+)/$', views.store_status, name='store_status'),
+    url(r'^store_status/customer/(?P<store_name>[\w-]+)/$', views.customer, name='customer'),
+
 ]

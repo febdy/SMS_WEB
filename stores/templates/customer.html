@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block css %}
+{% endblock %}
+
+{% block content %}
+    <div class="top">
+        <div class="topLeft"><a href="/">HOME</a></div>
+        <div class="topCenter">{{ store_name }}</div>
+        <div class="topRight"><span class="freePerTotal">사용가능 / 총좌석 </span><br><span id="freeTableNum">0</span> / <span id="totalTableNum">0</span></div>
+    </div>
+    <p>
+
+        <div class="middle" id="tables">
+            {% for i in range %}
+                <img src="/static/img/f_{{ i }}.jpg" id="table_{{ i }}" class="tableImg">
+                {% if i == 5 %}
+                    <p/>
+                {% endif %}
+            {% endfor %}
+    </div>
+
+    <div class="bottom">
+        <div class="info">
+            <img src="/static/img/info_free.png" class="infoImg">
+            <img src="/static/img/info_taken.png" class="infoImg">
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block javascript %}
+    <script>
+
+        $('document').ready(function(){
+            function setTableNum(num){
+                var tableNum = "table_" + num;
+                var table = document.getElementById(tableNum);
+
+                return table;
+            }
+
+            function setTableStatus(tableStatus, ifModifiedArr){
+                var src;
+                var free = 0;
+
+                for(var i=0 ; i<tableStatus.length ; i++) {
+                    if (ifModifiedArr[i] == 0) {
+                        if (tableStatus[i] == 0) {
+                            src = "f_" + (i + 1) + ".jpg";
+                            free += 1;
+                        } else if (tableStatus[i] == 1) {
+                            src = "t_" + (i + 1) + ".jpg";
+                        }
+                        else {
+                            src = "t_" + (i + 1) + ".jpg"; // 2 -> 사람있음 1 -> 불확실함 flag
+                        }
+
+                        var table = setTableNum(i + 1);
+                        setSrc(table, src);
+                        setFreeNum(free, tableStatus.length);
+                    }
+                }
+            }
+
+            function setSrc(table, src){
+                table.src = "/static/img/"+src;
+            }
+
+            function setFreeNum(free, total){
+                $("#freeTableNum").text(free);
+                $("#totalTableNum").text(total);
+            }
+
+            setInterval(function(){
+                $.ajax({
+                    datatype:'json',
+                    url:"/store_status/customer/{{ store_name }}",
+                    success: function(data) {
+                        tableStatus = data.table_status;
+                        ifModifiedArr = data.if_modified;
+                        setTableStatus(tableStatus, ifModifiedArr);
+                    },
+                    error: function(error) {
+                        console.log(error);
+                    }
+                });
+            }, 2000);
+
+        });
+
+    </script>
+
+{% endblock %}
