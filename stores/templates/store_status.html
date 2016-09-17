@@ -81,7 +81,7 @@
                 var src;
                 var free = 0;
 
-                for(var i=0 ; i<=tableStatus.length ; i++) {
+                for(var i=0 ; i<tableStatus.length ; i++) {
                     if (ifModifiedArr[i] == 0) {
                         if (tableStatus[i] == 0) {
                             src = "f_" + (i + 1) + ".jpg";
@@ -110,9 +110,16 @@
             }
 
             $('#taken').click(function(){
-                var tableNum = document.getElementById("tableNumber").innerHTML;
-                var src = "t_" + tableNum + ".jpg";
-                setSrc("table_"+tableNum, src);
+                $.ajax({
+                    url: window.location.href,
+                    success: function(){
+                        var tableNum = document.getElementById("tableNumber").innerHTML;
+                        var table = setTableNum(tableNum);
+                        var src = "t_" + tableNum + ".jpg";
+                        setSrc(table, src);
+                    }
+
+                });
 
                 $.ajax({
                     url:'{% url 'update_db' %}',
@@ -120,7 +127,7 @@
                         'storeName' : '{{ store_name }}',
                         'tableNum' : document.getElementById("tableNumber").innerHTML,
                         'setStatus' : '2',
-                        'ifModified':'1'
+                        'modified':'1'
                     },
                     datatype:'json',
                     success: function(data) {
@@ -132,13 +139,25 @@
             });
 
             $('#free').click(function(){
+
+                $.ajax({
+                    url: window.location.href,
+                    success: function(){
+                        var tableNum = document.getElementById("tableNumber").innerHTML;
+                        var table = setTableNum(tableNum);
+                        var src = "f_" + tableNum + ".jpg";
+                        setSrc(table, src);
+                    }
+
+                });
+
                 $.ajax({
                     url:'{% url 'update_db' %}',
                     data:{
                         'storeName' : '{{ store_name }}',
                         'tableNum' : document.getElementById("tableNumber").innerHTML,
                         'setStatus' : '0',
-                        'ifModified':'1'
+                        'modified':'1'
                     },
                     datatype:'json',
                     success: function(data) {

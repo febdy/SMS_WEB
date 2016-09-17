@@ -65,8 +65,8 @@ def update_db(request):
     table_number = "table_"+request.GET['tableNum']
     set_status = request.GET['setStatus']
     modified_number = "modified_"+request.GET['tableNum']
-    if_modified = request.GET['ifModified']
-    update_table_status(store_name, table_number, set_status, modified_number, if_modified)
+    modified = request.GET['modified']
+    update_table_status(store_name, table_number, set_status, modified_number, modified)
 
 
 def get_store_info_db():
