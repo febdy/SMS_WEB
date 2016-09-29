@@ -53,8 +53,6 @@ def store_status(request, store_name):
     context = get_table_status_db(store_name)
     context['range'] = range(1, context['table_num']+1)
 
-    print(context['table_status'])
-
     if request.is_ajax():
         return HttpResponse(json.dumps({'table_status': context['table_status'], 'if_modified': context['if_modified']})
                             , content_type="application/json")
