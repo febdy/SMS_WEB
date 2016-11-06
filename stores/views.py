@@ -15,10 +15,15 @@ class Home(TemplateView):
 
 
 def home(request):
-    context = get_store_info_db()
+    """context = get_store_info_db()
     context = {'context': context}
 
-    return render_to_response('main.html', context)
+    return render_to_response('main.html', context)"""
+
+    context = get_table_status_db('상상플러스1호점')
+    context['range'] = range(1, context['table_num']+1)
+
+    return render_to_response('customer.html', context)
 
 
 def autocomplete(request):

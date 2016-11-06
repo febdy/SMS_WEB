@@ -5,7 +5,7 @@
 
 {% block content %}
     <div class="top">
-        <div class="topLeft"><a href="/">HOME</a></div>
+        <div class="topLeft"><a href="/store_status/manager/{{ store_name }}">손님용화면</a></div>
         <div class="topCenter">{{ store_name }}</div>
         <div class="topRight"><span class="freePerTotal">사용가능 / 총좌석 </span><br><span id="freeTableNum">0</span> / <span id="totalTableNum">0</span></div>
     </div>
@@ -75,7 +75,7 @@
             setInterval(function(){
                 $.ajax({
                     datatype:'json',
-                    url:"/store_status/customer/{{ store_name }}",
+                    url:"/store_status/{{ store_name }}",
                     success: function(data) {
                         tableStatus = data.table_status;
                         ifModifiedArr = data.if_modified;
